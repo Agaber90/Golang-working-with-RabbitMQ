@@ -123,3 +123,4 @@ Analysing and restructuring of a message does the following:
 - model/
 - helper/
 - categoryhandler/
+- rabbitmqhandler/
