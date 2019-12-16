@@ -1,1 +1,1 @@
-
+{"id":1,"findings":[{"name":"Finding 1","severity":5.95,"service":"A","sub_findings":[{"name":"Subfinding 1","severity":2.26},{"name":"Subfinding 2","severity":4},{"name":"Subfinding 3","severity":4.56},{"name":"Subfinding 4","severity":7.59},{"name":"Subfinding 5","severity":3.53},{"name":"Subfinding 6","severity":1.93}]},{"name":"Finding 2","severity":1.6,"service":"C","sub_findings":[{"name":"Subfinding 1","severity":6.78}]}]}
