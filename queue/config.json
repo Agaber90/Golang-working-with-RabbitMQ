@@ -1,0 +1,14 @@
+{
+  "debug": true,
+  "rabbitMQ": {
+    "server": "localhost",
+    "port": "5672",
+    "userName": "guest",
+    "password": "guest",
+    "queueName": "finding",
+    "contentType": "text/plain"
+  },
+  "inputFolder": {
+    "path": "../inputs/"
+  }
+}

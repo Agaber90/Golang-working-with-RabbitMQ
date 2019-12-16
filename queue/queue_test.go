@@ -6,26 +6,54 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/spf13/viper"
 )
 
-func init() {
+func Test_ReadConfig(t *testing.T) {
 	viper.SetConfigFile("config.json")
 	pvError := viper.ReadInConfig()
 	if pvError != nil {
-		panic(pvError)
-	}
-
-	if viper.GetBool("debug") {
-		fmt.Println("Service RUN on DEBUG mode")
+		assert.Error(t, pvError, "Cannot Read the config file")
 	}
 }
 
-func main() {
+func Test_OpenInputFolder(t *testing.T) {
+	viper.SetConfigFile("config.json")
+	_ = viper.ReadInConfig()
 
+	pvFolderPath := viper.GetString("inputFolder.path")
+
+	_, PvError := os.Open(pvFolderPath)
+	if PvError != nil {
+		assert.Error(t, PvError, "Cannot open the Folder")
+	}
+}
+
+func Test_ReadAllFiles(t *testing.T) {
+	viper.SetConfigFile("config.json")
+	_ = viper.ReadInConfig()
+	pvFolderPath := viper.GetString("inputFolder.path")
+
+	pvFile, _ := os.Open(pvFolderPath)
+
+	pvFileList, pvError := pvFile.Readdirnames(0)
+	if pvError != nil {
+		assert.Error(t, pvError, "Cannot read the files")
+	}
+
+	if len(pvFileList) > 0 {
+		assert.Equal(t, len(pvFileList), len(pvFileList), "files have been fetched")
+	}
+}
+
+func Test_SendFilesToTheQueue(t *testing.T) {
+	viper.SetConfigFile("config.json")
+	_ = viper.ReadInConfig()
 	pvFolderPath := viper.GetString("inputFolder.path")
 	pvHost := viper.GetString("rabbitMQ.server")
 	pvPort := viper.GetString("rabbitMQ.port")
@@ -34,29 +62,14 @@ func main() {
 	pvQueueName := viper.GetString("rabbitMQ.queueName")
 	pvContentType := viper.GetString("rabbitMQ.contentType")
 
-	pvFile, PvError := os.Open(pvFolderPath)
-	if PvError != nil {
-		log.Fatalf("failed opening directory: %s", PvError)
-		panic(PvError)
-	}
-
-	pvFileList, pvError := pvFile.Readdirnames(0)
-	if pvError != nil {
-		log.Fatalf("failed list the files: %s", PvError)
-		panic(pvError)
-	}
+	pvFile, _ := os.Open(pvFolderPath)
+	pvFileList, _ := pvFile.Readdirnames(0)
 
 	pvMQ := pvPassword + ":" + pvUserName + "@" + pvHost + ":" + pvPort
 	pvMQURL := "amqp://" + pvMQ + "/"
 
 	pvRabbitMQ := rabbitmqhandler.NewRabitMQConnection(pvMQURL)
-	pvRabbitMQQueue := rabbitmqhandler.NewQueue(
-		pvQueueName,
-		false,
-		false,
-		false,
-		false,
-		nil)
+	pvRabbitMQQueue := rabbitmqhandler.NewQueue(pvQueueName+"_test", false, false, false, false, nil)
 
 	for _, pvFielName := range pvFileList {
 		pvJSONFile, _ := ioutil.ReadFile(pvFolderPath + pvFielName)
@@ -77,4 +90,5 @@ func main() {
 	}
 	defer pvRabbitMQ.Channel.Close()
 	defer pvRabbitMQ.Conn.Close()
+
 }
