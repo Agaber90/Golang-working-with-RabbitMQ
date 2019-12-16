@@ -1,6 +1,5 @@
 # Golang-working-with-RabbitMQ
 #This is a small application will help you how to communicate with RabbitMQ. Please see the solution details below
-# Application Process (Golang Task)
 
 ### Project Description
 
