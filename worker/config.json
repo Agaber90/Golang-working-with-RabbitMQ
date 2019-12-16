@@ -1,0 +1,15 @@
+{
+    "debug": true,
+    "rabbitMQ": {
+        "server": "localhost",
+        "port": "5672",
+        "userName": "guest",
+        "password": "guest",
+        "queueName": "finding",
+        "contentType": "text/plain",
+        "worker": 5
+    },
+    "outputFolder": {
+        "path": "../outputs/"
+    }
+}
