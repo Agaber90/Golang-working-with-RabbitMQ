@@ -9,7 +9,7 @@ We have a `input` folder, which contains such data splitted in different files. 
 
 In order to present all findings, we need another service to restructure the provided data.
 
-This second service will listen to the queue and restructure all messages into the required format.
+This second service (worker) will listen to the queue and restructure all messages into the required format.
 
 **Example Input Structure**
 
@@ -99,11 +99,11 @@ This second service will listen to the queue and restructure all messages into t
 
 we will Build two Go Micro-Applications:
 
-1. The first application contains a queue.
+1. The first application (queue) contains a queue.
 	* Implement a queue system
 	* On startup of the application, read-in all files from the `inputs` folder, convert them to a struct and add the structs to the queue
 
-2. The second application should be a worker which can read from the queue in the first application.
+2. The second application (worker) should be a worker which can read from the queue in the first application.
 	* It should be able to handle 5 queue messages at the same time. 
 	* Each message should be analysed and converted to a result struct.
 	* Write the result struct to a file `result_ID.json` - where ID is the ID from the input - in the `outputs` subfolder.
@@ -118,5 +118,8 @@ Analysing and restructuring of a message does the following:
 ### Folder structure
 - inputs/
 - outputs/
-- code_app1/
-- code_app2/
+- queue/
+- worker/
+- model/
+- helper/
+- categoryhandler/
